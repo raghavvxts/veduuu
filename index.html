@@ -29,12 +29,10 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   pointer-events:none;
   z-index:4;
   background:radial-gradient(
-    ellipse 90% 90% at var(--spot-x) var(--spot-y),
-    transparent 0%,
-    rgba(246,193,216,0.08) 20%,
-    transparent 35%,
-    rgba(0,0,0,0.5) 65%,
-    rgba(0,0,0,0.85) 100%
+    ellipse 60% 60% at var(--spot-x) var(--spot-y),
+    rgba(246,193,216,0.18) 0%,
+    rgba(246,193,216,0.10) 22%,
+    transparent 50%
   );
   opacity:0;
   transition:opacity 1.5s ease;
@@ -193,6 +191,37 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   opacity:0.9;
 }
 
+/* MUSIC START BUTTON (for autoplay rules) */
+#musicGate{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9;
+  pointer-events:auto;
+  background:#020209;
+  transition:opacity 0.6s ease;
+}
+#musicGate.hidden{
+  opacity:0;
+  pointer-events:none;
+}
+#musicGate button{
+  padding:10px 22px;
+  border-radius:999px;
+  border:1px solid rgba(246,193,216,0.8);
+  background:rgba(246,193,216,0.12);
+  color:#f6c1d8;
+  font-size:13px;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  transition:all 0.3s ease;
+}
+#musicGate button:hover{
+  background:rgba(246,193,216,0.15);
+  box-shadow:0 0 18px rgba(246,193,216,0.5);
+}
 /* FLOATING HEARTS ON LANDING */
 .heart{
   position:absolute;
@@ -205,6 +234,44 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   10%{opacity:0.4;}
   90%{opacity:0.3;}
   100%{transform:translateY(-100px) rotate(360deg);opacity:0;}
+}
+
+/* PROPOSAL MICRO‑ANIMATIONS */
+@keyframes proposalBreath{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.03);}
+}
+@keyframes shootingStar{
+  0%{opacity:0;transform:translate(-40%,20%) scaleX(1);}
+  10%{opacity:1;}
+  100%{opacity:0;transform:translate(140%,-40%) scaleX(1);}
+}
+
+/* FINAL NAME CONSTELLATION */
+.name-const-wrap{
+  position:relative;
+  width:100%;
+  max-width:520px;
+  height:150px;
+  margin:26px auto 0;
+  overflow:hidden;
+}
+.name-const-star{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#f6c1d8;
+  box-shadow:0 0 14px rgba(246,193,216,0.9);
+}
+.name-const-line{
+  position:absolute;
+  height:2px;
+  background:rgba(246,193,216,0.85);
+  transform-origin:left center;
+  box-shadow:0 0 10px rgba(246,193,216,0.8);
+  opacity:0;
+  transition:opacity .35s ease-out;
 }
 
 /* SCREEN 2: QUIZ */
@@ -265,6 +332,7 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
 
 /* SCREEN 3: MAIN PROPOSAL */
 #proposal #photo{
+  position:relative;
   width:min(28vw,220px);
   height:min(28vw,220px);
   border-radius:50%;
@@ -272,6 +340,19 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   box-shadow:0 0 60px rgba(255,182,193,0.9),0 0 120px rgba(255,182,193,0.4);
   margin-bottom:25px;
   animation:photoGlow 3s ease-in-out infinite alternate;
+}
+#proposal #photo::after{
+  content:'';
+  position:absolute;
+  top:25%;
+  left:-30%;
+  width:120%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#ffffff,#f6c1d8,transparent);
+  opacity:0;
+  transform-origin:left center;
+  animation:shootingStar 2.8s linear 1 forwards;
+  animation-delay:4s;
 }
 @keyframes photoGlow{
   from{box-shadow:0 0 50px rgba(255,182,193,0.8),0 0 100px rgba(255,182,193,0.3);}
@@ -282,6 +363,8 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   font-family:'Playfair Display',serif;
   font-size:clamp(28px,4vw,44px);
   margin-bottom:10px;
+  animation:proposalBreath 6s ease-in-out infinite;
+  animation-delay:3s;
 }
 #proposal h2{
   font-size:clamp(14px,2vw,18px);
@@ -393,7 +476,7 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
 </head>
 <body>
 
-<audio id="music" src="song.mp3"></audio>
+<audio id="music" src="song.mp3" autoplay loop></audio>
 
 <div id="spotlight"></div>
 
@@ -406,54 +489,56 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
   </div>
 </div>
 
+<!-- tiny music start button (disappears after click) -->
+<div id="musicGate">
+  <button id="musicBtn">Yupp! 🎵</button>
+</div>
+
 <!-- INTRO CUPID CINEMATIC (CONSTELLATION STYLE) -->
 <div id="introCupid">
   <div class="cupid-wrap">
     <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
-        <radialGradient id="introGlow" cx="50%" cy="35%" r="60%">
+        <radialGradient id="introGlow" cx="38%" cy="38%" r="45%">
           <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-          <stop offset="35%" stop-color="#ffe4f0" stop-opacity="0.9"/>
+          <stop offset="40%" stop-color="#ffe4f0" stop-opacity="0.9"/>
           <stop offset="100%" stop-color="#0a0a0f" stop-opacity="0"/>
         </radialGradient>
       </defs>
       <!-- soft glow behind cupid -->
-      <circle cx="50" cy="50" r="42" fill="url(#introGlow)"/>
-      <!-- constellation-style CUPID (not Gemini): head, body, wings, bow, arrow from bow -->
+      <circle cx="40" cy="46" r="32" fill="url(#introGlow)"/>
+      <!-- simple standing cupid made of stars, facing right -->
       <g stroke="#f6c1d8" stroke-width="1.1" fill="none" stroke-linecap="round">
         <!-- head -->
-        <path d="M 50 24 L 50 32" stroke-dasharray="2 3"/>
-        <!-- torso -->
-        <path d="M 50 36 L 50 68" stroke-dasharray="2 3"/>
-        <!-- left arm holding bow -->
-        <path d="M 50 48 L 32 50" stroke-dasharray="2 3"/>
-        <!-- right arm drawing - extends toward bow, arrow comes out here -->
-        <path d="M 50 48 L 68 46" stroke-dasharray="2 3"/>
-        <!-- bow (curved arc, left of cupid) -->
-        <path d="M 30 52 Q 38 42 46 50 Q 38 58 30 52" stroke-dasharray="2 3"/>
-        <!-- arrow shaft from bow (extends right - flying arrow continues this path) -->
-        <path d="M 46 50 L 80 35" stroke-dasharray="2 3"/>
-        <!-- legs -->
-        <path d="M 50 68 L 58 92" stroke-dasharray="2 3"/>
-        <path d="M 50 68 L 42 92" stroke-dasharray="2 3"/>
-        <!-- wings (spread out, not vertical) -->
-        <path d="M 42 38 Q 24 32 22 46" stroke-dasharray="2 3"/>
-        <path d="M 58 38 Q 76 32 78 46" stroke-dasharray="2 3"/>
+        <path d="M 40 24 L 40 30" stroke-dasharray="2 3"/>
+        <!-- torso (slight lean) -->
+        <path d="M 40 30 L 44 56" stroke-dasharray="2 3"/>
+        <!-- front leg -->
+        <path d="M 44 56 L 48 80" stroke-dasharray="2 3"/>
+        <!-- back leg -->
+        <path d="M 44 56 L 36 80" stroke-dasharray="2 3"/>
+        <!-- wing -->
+        <path d="M 34 34 Q 26 40 24 50" stroke-dasharray="2 3"/>
+        <!-- arm holding bow (left arm) -->
+        <path d="M 44 40 L 32 44" stroke-dasharray="2 3"/>
+        <!-- bow curve on left -->
+        <path d="M 30 46 Q 26 40 30 34" stroke-dasharray="2 3"/>
+        <!-- arrow nocked, pointing right -->
+        <path d="M 32 40 L 64 36" stroke-dasharray="2 3"/>
       </g>
       <!-- bright star joints -->
       <g fill="#ffffff">
-        <circle cx="50" cy="28" r="1.8"/>
-        <circle cx="50" cy="48" r="1.9"/>
-        <circle cx="50" cy="68" r="1.9"/>
-        <circle cx="58" cy="92" r="1.6"/>
-        <circle cx="42" cy="92" r="1.6"/>
-        <circle cx="32" cy="50" r="1.4"/>
-        <circle cx="46" cy="50" r="1.6"/>
-        <circle cx="68" cy="46" r="1.5"/>
-        <circle cx="42" cy="38" r="1.4"/>
-        <circle cx="58" cy="38" r="1.4"/>
-        <circle cx="22" cy="46" r="1.3"/>
-        <circle cx="78" cy="46" r="1.3"/>
+        <circle cx="40" cy="24" r="1.7"/>
+        <circle cx="40" cy="30" r="1.7"/>
+        <circle cx="44" cy="40" r="1.6"/>
+        <circle cx="32" cy="44" r="1.5"/>
+        <circle cx="30" cy="46" r="1.4"/>
+        <circle cx="44" cy="56" r="1.8"/>
+        <circle cx="48" cy="80" r="1.6"/>
+        <circle cx="36" cy="80" r="1.6"/>
+        <circle cx="34" cy="34" r="1.4"/>
+        <circle cx="24" cy="50" r="1.3"/>
+        <circle cx="64" cy="36" r="1.6"/>
       </g>
     </svg>
     <div id="introArrow"></div>
@@ -464,7 +549,7 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
 <!-- SCREEN 1: LANDING -->
 <div id="landing" class="screen active">
   <div id="hearts"></div>
-  <p class="tagline">Something special is waiting for you...</p>
+  <p class="tagline">Something mildly unhinged is waiting for you...</p>
   <button id="enterBtn">Enter ✨</button>
 </div>
 
@@ -516,9 +601,10 @@ canvas{position:fixed;top:0;left:0;z-index:0;}
 
 <!-- SCREEN 4: SUCCESS -->
 <div id="success" class="screen">
-  <h1 id="cosmicYes">A Cosmic Yes. 💫</h1>
+  <h1 id="cosmicYes">A Cosmic Yes.</h1>
   <p class="sub">See you at the stars, Vedanshi 💗</p>
   <div id="confetti"></div>
+  <div id="nameConst" class="name-const-wrap"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -535,12 +621,25 @@ const introCupid = document.getElementById('introCupid');
 const introArrow = document.getElementById('introArrow');
 const flash = document.getElementById('flash');
 const titleCard = document.getElementById('titleCard');
+const music = document.getElementById('music');
+const musicGate = document.getElementById('musicGate');
+const musicBtn = document.getElementById('musicBtn');
 let introRunning = true;
 let introStartTime = null;
+let spotX = 32;
+let spotY = 52;
+
+function safePlayMusic(){
+  if(!music) return;
+  // try play; if blocked, next user click handler will retry
+  try{ music.play(); }catch(e){}
+}
 
 function startIntro(){
   // hide all content screens while intro plays
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  // try to start music as early as possible
+  safePlayMusic();
   requestAnimationFrame(stepIntro);
 }
 
@@ -556,11 +655,16 @@ function stepIntro(timestamp){
   const x = startX + (endX - startX) * t;
   const y = startY + (endY - startY) * t;
 
+  // move arrow exactly with path
   introArrow.style.left = x + '%';
   introArrow.style.top = y + '%';
 
-  document.documentElement.style.setProperty('--spot-x', x + '%');
-  document.documentElement.style.setProperty('--spot-y', y + '%');
+  // ease spotlight slightly behind arrow for smoother feeling
+  const lerpFactor = 0.15;
+  spotX = spotX + (x - spotX) * lerpFactor;
+  spotY = spotY + (y - spotY) * lerpFactor;
+  document.documentElement.style.setProperty('--spot-x', spotX + '%');
+  document.documentElement.style.setProperty('--spot-y', spotY + '%');
 
   if(t < 1){
     requestAnimationFrame(stepIntro);
@@ -589,7 +693,18 @@ function stepIntro(timestamp){
   }
 }
 
-startIntro();
+// Safari/Chrome autoplay guard: if autoplay is blocked, play on first user interaction
+if(music && musicBtn && musicGate){
+  musicBtn.onclick = ()=>{
+    safePlayMusic();
+    musicGate.classList.add('hidden');
+    // start the whole cinematic only after she taps
+    startIntro();
+  };
+} else {
+  // fallback: if button missing, start intro immediately
+  startIntro();
+}
 
 // (Hearts row removed to keep the first screen subtle)
 document.getElementById('enterBtn').onclick=()=>showScreen('quiz');
@@ -597,8 +712,8 @@ document.getElementById('enterBtn').onclick=()=>showScreen('quiz');
 // === QUIZ ===
 const quizData=[
   {q:"What makes the stars shine brighter?",a:["Your smile","Clouds","The moon","Random stuff"]},
-  {q:"Where would you want to go on a dream date?",a:["Among the stars ✨","A cozy café","Somewhere adventurous","Anywhere with you"]},
-  {q:"What's the best way to say 'I like you'?",a:["With a cosmic website 🌌","A text","In person","All of the above"]},
+  {q:"If we went to an F1 race together, what would be the coolest part? 🏎️",a:["Hearing the cars scream past on the main straight 🔊","Watching an insane last‑lap overtake for the win ⚡","Walking the paddock pretending we own a team 😎","Arguing about which driver’s race pace is actually better 💬"]},
+  {q:"If you suddenly woke up as Spider‑Man, what’s the FIRST very unserious thing you’d do? 🕷️",a:["Swing into class through the window just to avoid the door","Use web‑shooters to steal snacks from the vending machine","Web people’s phones to the ceiling when they say \"one last reel\"","Settle every argument by saying \"My Spidey‑sense says I’m right\""]},
   {q:"Ready for the big question?",a:["Yes!","Of course!","Absolutely!","Let's go!"]}
 ];
 let quizIdx=0;
@@ -666,6 +781,79 @@ scene.add(stars);
 let warp=false,warpSpeed=0;
 let comet,halo,cometTrail=[],cometActive=false,cometProgress=0;
 
+function reseedStars(){
+  const arr=starGeo.attributes.position.array;
+  for(let i=0;i<arr.length;i+=3){
+    arr[i]=(Math.random()-0.5)*8000;
+    arr[i+1]=(Math.random()-0.5)*6000;
+    arr[i+2]=Math.random()*-6000;
+  }
+  starGeo.attributes.position.needsUpdate=true;
+}
+
+function drawNameConstellation(){
+  const wrap=document.getElementById('nameConst');
+  if(!wrap) return;
+  wrap.innerHTML='';
+
+  const letters={
+    V:{points:[[0,0],[20,55],[40,0]],lines:[[0,1],[1,2]]},
+    E:{points:[[40,0],[0,0],[0,55],[40,55],[0,27],[32,27]],lines:[[0,1],[1,2],[2,3],[2,4],[4,5]]},
+    D:{points:[[0,0],[0,55],[30,45],[40,27],[30,10],[0,0]],lines:[[0,1],[1,2],[2,3],[3,4],[4,5]]},
+    A:{points:[[0,55],[20,0],[40,55],[10,30],[30,30]],lines:[[0,1],[1,2],[3,4]]},
+    N:{points:[[0,55],[0,0],[40,55],[40,0]],lines:[[0,1],[1,2],[2,3]]},
+    S:{points:[[40,0],[0,0],[0,27],[40,27],[40,55],[0,55]],lines:[[0,1],[1,2],[2,3],[3,4],[4,5]]},
+    H:{points:[[0,0],[0,55],[40,0],[40,55],[0,27],[40,27]],lines:[[0,1],[2,3],[4,5]]},
+    I:{points:[[20,0],[20,55]],lines:[[0,1]]}
+  };
+
+  const name="VEDANSHI";
+  const baseSpacing=55;
+  const scale=Math.min(1,(wrap.clientWidth-20)/(name.length*baseSpacing));
+  const spacing=baseSpacing*scale;
+  const startX=(wrap.clientWidth-(name.length*spacing))/2;
+  const baseY=20;
+
+  let offsetX=startX;
+  let delay=0;
+
+  for(const char of name){
+    const data=letters[char];
+    const pts=data.points;
+
+    pts.forEach(p=>{
+      const s=document.createElement('div');
+      s.className='name-const-star';
+      s.style.left=(offsetX+p[0]*scale)+'px';
+      s.style.top=(baseY+p[1]*scale)+'px';
+      wrap.appendChild(s);
+    });
+
+    data.lines.forEach(pair=>{
+      const [i,j]=pair;
+      const x1=offsetX+pts[i][0]*scale;
+      const y1=baseY+pts[i][1]*scale;
+      const x2=offsetX+pts[j][0]*scale;
+      const y2=baseY+pts[j][1]*scale;
+
+      const l=document.createElement('div');
+      l.className='name-const-line';
+      l.style.left=x1+'px';
+      l.style.top=y1+'px';
+      const dx=x2-x1;
+      const dy=y2-y1;
+      l.style.width=Math.hypot(dx,dy)+'px';
+      l.style.transform=`rotate(${Math.atan2(dy,dx)}rad)`;
+      wrap.appendChild(l);
+
+      setTimeout(()=>{l.style.opacity='1';},delay);
+      delay+=160;
+    });
+
+    offsetX+=spacing;
+  }
+}
+
 function createComet(){
   const geometry=new THREE.SphereGeometry(10,16,16);
   const material=new THREE.MeshBasicMaterial({color:0xf6c1d8});
@@ -680,8 +868,8 @@ function createComet(){
 }
 
 function createTrail(x,y,z){
-  const geo=new THREE.SphereGeometry(4,8,8);
-  const mat=new THREE.MeshBasicMaterial({color:0xf6c1d8,transparent:true,opacity:0.8});
+  const geo=new THREE.SphereGeometry(6,10,10);
+  const mat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:1});
   const p=new THREE.Mesh(geo,mat);
   p.position.set(x,y,z);
   scene.add(p);
@@ -707,10 +895,12 @@ function animate(){
     let y=Math.sin(cometProgress*Math.PI)*800;
     comet.position.set(x,y,-800);
     halo.position.copy(comet.position);
+    // denser star trail
     createTrail(x,y,-800);
+    createTrail(x+40,y+20,-820);
     cometTrail.forEach((p,i)=>{
-      p.scale.multiplyScalar(0.95);
-      p.material.opacity-=0.02;
+      p.scale.multiplyScalar(0.97);
+      p.material.opacity-=0.01;
       if(p.material.opacity<=0){scene.remove(p);cometTrail.splice(i,1);}
     });
     if(cometProgress>=1){
@@ -718,17 +908,15 @@ function animate(){
       scene.remove(comet);scene.remove(halo);
       warpSpeed=8;
       setTimeout(()=>{
-        document.getElementById('cupid').classList.add('visible');
-      },200);
-      setTimeout(()=>{
         showScreen('success');
         spawnConfetti();
+        drawNameConstellation();
         // calm background for ending screen
         document.getElementById('spotlight').classList.remove('active');
         warp=false;
         warpSpeed=0;
-      },1800);
-      setTimeout(()=>warpSpeed=30,2500);
+        reseedStars();
+      },2600);
     }
   }
   renderer.render(scene,camera);
@@ -779,18 +967,17 @@ noBtn.onclick=function(){
 
 // === CONFETTI ===
 function spawnConfetti(){
-  const colors=['#f6c1d8','#ffb6c1','#ff69b4','#fff'];
-  const symbols=['💕','💗','💖','✨','♥','✧'];
+  const colors=['#ffffff','#ffe4f0','#f6c1d8'];
   const c=document.getElementById('confetti');
   for(let i=0;i<80;i++){
     const p=document.createElement('span');
     p.className='confetti';
-    p.textContent=Math.random()>0.5?symbols[Math.floor(Math.random()*symbols.length)]:'';
-    p.style.cssText=`left:${Math.random()*100}vw;top:${Math.random()*100}vh;font-size:${12+Math.random()*20}px;animation:confettiFall ${2+Math.random()*3}s ease-out forwards;`;
-    if(!p.textContent){
-      p.style.width='8px';p.style.height='8px';p.style.borderRadius='50%';
-      p.style.background=colors[Math.floor(Math.random()*colors.length)];
-    }
+    p.textContent='';
+    p.style.width='6px';
+    p.style.height='6px';
+    p.style.borderRadius='50%';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText+=`left:${40+Math.random()*20}vw;top:${35+Math.random()*20}vh;animation:confettiFall ${2.5+Math.random()}s ease-out forwards;`;
     c.appendChild(p);
     setTimeout(()=>p.remove(),5000);
   }
